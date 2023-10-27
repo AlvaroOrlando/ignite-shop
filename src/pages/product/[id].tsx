@@ -1,6 +1,6 @@
 import { stripe } from '@/lib/stripe'
 import { ImageContainer, ProductContainer, ProductDetails } from '@/styles/pages/product'
-import { GetStaticProps } from 'next'
+import { GetStaticPaths, GetStaticProps } from 'next'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
 import Stripe from 'stripe'
@@ -17,7 +17,12 @@ interface ProductProps {
 
 export default function Product({ product }:ProductProps){
 
-const {query} = useRouter()
+    const { isFallback } = useRouter()
+
+    if(isFallback){
+        return <h1>Loading...</h1>
+    }
+
     return (
         <ProductContainer>
             <ImageContainer>
@@ -35,7 +40,18 @@ const {query} = useRouter()
         </ProductContainer>
     )
 }
-const revalidationTime = 60 * 60 * 1 //1 hour
+
+export const getStaticPaths: GetStaticPaths = async() => {
+    return {
+        paths: [
+            {
+              params: { id:'prod_Osib82526Ib1xQ' }
+            }
+        ],
+        fallback: true
+    }
+    
+}
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
 
@@ -47,20 +63,29 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
     const price = product.default_price as Stripe.Price
 
-      
+    const revalidationTime = 60 * 60 * 1 //1 hour
+
+    const IntlConfig = {
+        style: 'currency',
+        currency: 'BRL'
+      }
+
+    const formatedPrice = new Intl.NumberFormat('pt-BR', IntlConfig).format(price.unit_amount ? price.unit_amount / 100 : 0)
+
+    const ProductListing = {
+        id: product.id,
+        name: product.name,
+        imageUrl: product.images[0],
+        price: formatedPrice,
+        description: product.description
+    }
+
     return {
+
         props:{
-            product: {
-                id: product.id,
-                name: product.name,
-                imageUrl: product.images[0],
-                price: new Intl.NumberFormat('pt-BR', {
-                  style: 'currency',
-                  currency: 'BRL'
-                }).format(price.unit_amount ? price.unit_amount / 100 : 0),
-                description: product.description
-            }
+            product:ProductListing 
         },
+
         revalidate: revalidationTime
     }
 }
