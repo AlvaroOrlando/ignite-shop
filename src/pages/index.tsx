@@ -1,7 +1,9 @@
-import { HomeContainer, Product } from '@/styles/pages/home'
+import { Footer, HomeContainer, Product } from '@/styles/pages/home'
 import Head from 'next/head'
 
 import Image from 'next/image'
+import bagImage from "../assets/bag.svg"
+
 import { GetStaticProps } from 'next'
 
 import { useKeenSlider } from 'keen-slider/react'
@@ -46,10 +48,15 @@ export default function Home({ products }:HomeProps) {
                   height={480} 
                   alt='' 
                 />
-                <footer>
-                  <strong>{product.name}</strong>
-                  <span>{product.price}</span>
-                </footer>
+                <Footer>
+                  <div>
+                    <strong>{product.name}</strong>
+                    <span>{product.price}</span>
+                  </div>
+                  <section>
+                    <Image src={bagImage} alt="" />
+                  </section>
+                </Footer>
               </Product>
             </Link>
           )
