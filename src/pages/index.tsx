@@ -65,7 +65,6 @@ export const getStaticProps:GetStaticProps = async () => {
     expand:['data.default_price']
   })
 
-  console.log(response.data)
 
   const products = response.data.map(product => {
 
