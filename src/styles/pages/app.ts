@@ -1,6 +1,6 @@
 import { styled } from "..";
 
-export const Container = styled('div', {
+export const MainContainer = styled('div', {
     display:"flex",
     flexDirection: 'column',
     alignItems:'flex-start',
@@ -23,24 +23,33 @@ export const BagContainer = styled('div', {
 
     position: 'relative',
 
-    img: {
-        lineHeight:'0'
-    },
+    button: {
+        border:'none',
+        outline:'none',
+        cursor:'pointer',
 
-    span: {
-        width:'1.5rem',
-        height:'1.5rem',
-        backgroundColor:'$green300',
-        borderRadius:'50%',
-        display:'flex',
-        alignItems:'center',
-        justifyContent:'center',
-        position:'absolute',
-        right:'-5px',
-        top:'-5px',
+        img: {
+            lineHeight:'0'
+        },
+    
+        span: {
+            width:'1.5rem',
+            height:'1.5rem',
+            backgroundColor:'$green300',
+            borderRadius:'50%',
+            display:'flex',
+            alignItems:'center',
+            justifyContent:'center',
+            position:'absolute',
+            right:'-5px',
+            top:'-5px',
+        },
+    
+        padding:'1rem',
+        backgroundColor:'$gray800',
+        borderRadius:'6px',
     },
+   
 
-    padding:'1rem',
-    backgroundColor:'$gray800',
-    borderRadius:'6px',
+   
 })

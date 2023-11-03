@@ -24,7 +24,12 @@ import { createStitches } from '@stitches/react'
             green300:'#00b37e',
         },
 
+        fontFamiles:{
+            Roboto:'Roboto',
+        },
+
         fontSizes: {
+            rg: '1rem',
             md: '1.125rem',
             lg: '1.25rem',
             xl: '1.5rem',
