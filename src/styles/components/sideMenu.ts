@@ -127,9 +127,6 @@ export const CustomOffcanvasFooter = styled('div', {
                 }
             }
 
-
-
-
         }
     }
     

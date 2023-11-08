@@ -6,7 +6,16 @@ import bagImg from '../assets/bag.svg';
 import productImage from '../assets/camisetas/1.png'
 
 import { theme } from '../styles/index';
-import { CustomOffcanvasCloseButton, CustomOffcanvasFooter, CustomOffcanvasTitle, ProductContainer, ProductDescriptionContainer, ProductImageContainer, Products } from '../styles/components/sideMenu'; // Importe o componente estilizado
+
+import { 
+  CustomOffcanvasCloseButton, 
+  CustomOffcanvasFooter, 
+  CustomOffcanvasTitle, 
+  ProductContainer, 
+  ProductDescriptionContainer, 
+  ProductImageContainer, 
+  Products 
+} from '../styles/components/sideMenu'; 
 
 export default function SideMenu() {
   const [show, setShow] = useState(false);
