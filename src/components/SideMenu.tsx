@@ -82,6 +82,7 @@ export default function SideMenu() {
         <Offcanvas.Body className='mt-4'>
           <Products>
           {cartItems.map((product) => (
+            [...Array(product.quantity)].map((_, index) => (
            
             <ProductContainer key={product.id}>
               <ProductImageContainer>
@@ -93,7 +94,9 @@ export default function SideMenu() {
                   <button onClick={() => removeFromCart(product.id)}>Remover</button>
               </ProductDescriptionContainer>
             </ProductContainer>
+            ))
           ))}
+          
           </Products>
         </Offcanvas.Body>
 

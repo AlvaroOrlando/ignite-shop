@@ -40,7 +40,6 @@ export function ShoppinCartProvider({ children }:ShoppinCartProviderProps){
 
         const [cartItems, setCartItems] = useState<CartItem[]>([])
 
-
         function getItemQuantity(id:string){
             return cartItems.find(item => item.id === id)?.quantity || 0        
         }
@@ -90,12 +89,24 @@ export function ShoppinCartProvider({ children }:ShoppinCartProviderProps){
             })
         }
 
-        function removeFromCart(id:string){
-            setCartItems(currItems => {
-                return currItems.filter(item => item.id !== id)
-            }) 
+        function removeFromCart(id:string) {
+            setCartItems((currItems) => {
+              const itemToRemove = currItems.find((item) => item.id === id);
+              if (itemToRemove) {
+                if (itemToRemove.quantity === 1) {
+                  
+                  return currItems.filter((item) => item.id !== id);
+                } else {
+                  
+                  return currItems.map((item) =>
+                    item.id === id ? { ...item, quantity: item.quantity - 1 } : item
+                  );
+                }
+              }
+              return currItems;
+            });
         }
-
+          
         function resetCart(){
             setCartItems([])
         }
