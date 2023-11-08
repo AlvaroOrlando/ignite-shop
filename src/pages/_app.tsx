@@ -7,23 +7,27 @@ import logoimg from "../assets/logo.svg"
 import { BagContainer, MainContainer, Header } from '@/styles/pages/app'
 import Image from 'next/image'
 import SideMenu from '@/components/SideMenu'
+import { ShoppinCartProvider } from "@/context/shoppingCartContext";
 
 globalStyles()
 
 export default function App({ Component, pageProps }: AppProps) {
 
-  const itemsInBag = 0  
+
 
   return (
-    <MainContainer>
-      <Header>
-        <Image src={logoimg} alt="logo" />
-        <BagContainer>
-          <SideMenu />
-        </BagContainer>
-      </Header>
+    <ShoppinCartProvider>
+      <MainContainer>
+        <Header>
+          <Image src={logoimg} alt="logo" />
+          <BagContainer>
+            
+            <SideMenu />
+          </BagContainer>
+        </Header>
 
-      <Component {...pageProps} />
-    </MainContainer>
+        <Component {...pageProps} />
+      </MainContainer>
+    </ShoppinCartProvider>
   )
 }

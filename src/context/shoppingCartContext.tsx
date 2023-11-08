@@ -1,22 +1,35 @@
-import {  ReactNode, createContext, useState, FocusEvent } from 'react'
+import {  ReactNode, createContext, useState } from 'react'
 
  interface ShoppinCartProviderProps {
     children: ReactNode
 }
 
  interface ShoppingCartContext {
-    getItemQuantity: (id:number) => number
+    getItemQuantity: (id:string) => number
     getAllItemsQuantity: () => number
-    increaseCartQuantity: (id:number) => void
-    decreaseCartQuantity: (id:number) => void
-    removeFromCart: (id:number) => void
+    increaseCartQuantity: (product: Product) => void;
+    decreaseCartQuantity: (id:string) => void
+    removeFromCart: (id:string) => void
     cartItems:CartItem[]
     resetCart: () => void
 }
  interface CartItem {
-    id:number
+    id:string
     quantity: number
+    name: string;
+    price: string;
+    imageUrl: string;
+    description: string;
 }
+
+interface Product {
+    id: string;
+    name: string;
+    price: string;
+    imageUrl: string;
+    description: string;
+  }
+  
 
 export const ShoppingCartContext = createContext({
 
@@ -28,7 +41,7 @@ export function ShoppinCartProvider({ children }:ShoppinCartProviderProps){
         const [cartItems, setCartItems] = useState<CartItem[]>([])
 
 
-        function getItemQuantity(id:number){
+        function getItemQuantity(id:string){
             return cartItems.find(item => item.id === id)?.quantity || 0        
         }
 
@@ -43,23 +56,27 @@ export function ShoppinCartProvider({ children }:ShoppinCartProviderProps){
            return sum
         }
 
-        function increaseCartQuantity(id:number){
-            setCartItems(currItems => {
-                if(currItems.find(item => item.id === id) == null){
-                    return [...currItems, {id, quantity: 1}]
-                } else {
-                    return currItems.map(item => {
-                        if(item.id === id){
-                            return {...item, quantity: item.quantity + 1}
-                        } else{
-                            return item
-                        }
-                    })
-                }
-            })
-        }
 
-        function decreaseCartQuantity(id:number){
+        function increaseCartQuantity(product: Product) {
+            setCartItems((currItems) => {
+              const existingItem = currItems.find((item) => item.id === product.id);
+          
+              if (existingItem) {
+                
+                return currItems.map((item) =>
+                  item.id === product.id
+                    ? { ...item, quantity: item.quantity + 1 }
+                    : item
+                );
+              } else {
+                
+                return [...currItems, { ...product, quantity: 1 }];
+              }
+            });
+        }
+          
+
+        function decreaseCartQuantity(id:string){
             setCartItems(currItems => {
                 if(currItems.find(item => item.id === id)?.quantity === 1){
                     return currItems.filter(item => item.id !== id)
@@ -75,7 +92,7 @@ export function ShoppinCartProvider({ children }:ShoppinCartProviderProps){
             })
         }
 
-        function removeFromCart(id:number){
+        function removeFromCart(id:string){
             setCartItems(currItems => {
                 return currItems.filter(item => item.id !== id)
             }) 
@@ -84,6 +101,7 @@ export function ShoppinCartProvider({ children }:ShoppinCartProviderProps){
         function resetCart(){
             setCartItems([])
         }
+        
 
 
     return <ShoppingCartContext.Provider 

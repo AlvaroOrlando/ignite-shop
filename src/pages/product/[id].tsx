@@ -8,6 +8,8 @@ import { useRouter } from 'next/router'
 import { useState } from 'react'
 import Stripe from 'stripe'
 
+import { useShoppingCart } from "../../hooks/useShoppingCart"
+
 interface ProductProps {
     product:{
         id:string;
@@ -20,6 +22,8 @@ interface ProductProps {
 }
 
 export default function Product({ product }:ProductProps){
+
+    const { increaseCartQuantity } = useShoppingCart()
 
     const [isCreatingCheckoutSession, setIsCreatingCheckoutSession ] = useState(false)
 
@@ -52,6 +56,14 @@ export default function Product({ product }:ProductProps){
         return <h1>Loading...</h1>
     }
 
+
+    async function handleAddToCart(){
+
+        increaseCartQuantity(product);
+
+        console.log('Produto adicionado ao carrinho:', product)
+    }
+
     return (
         <>
         <Head>
@@ -68,7 +80,7 @@ export default function Product({ product }:ProductProps){
                 <p>
                     {product.description}
                 </p>
-                <button onClick={handleBuyProduct} disabled={isCreatingCheckoutSession}>Colocar na sacola</button>
+                <button onClick={handleAddToCart} disabled={isCreatingCheckoutSession}>Colocar na sacola</button>
             </ProductDetails>
           </ProductContainer>
         </>
