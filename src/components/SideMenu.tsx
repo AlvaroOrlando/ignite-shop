@@ -38,8 +38,6 @@ export default function SideMenu() {
   for (const item of cartItems) {
 
     const itemPrice = parseFloat(item.price)
-    console.log(`Preço: ${itemPrice}`);
-    console.log(`Quantidade: ${item.quantity }`);
 
     if ( item.quantity > 0) {
       totalPrice += itemPrice * item.quantity;
@@ -70,6 +68,7 @@ export default function SideMenu() {
   }
 
   return (
+
     <>
       <button onClick={handleShow}>
         {itemsInBag !== 0 && <span>{itemsInBag}</span>}
@@ -83,13 +82,14 @@ export default function SideMenu() {
         <Offcanvas.Body className='mt-4'>
           <Products>
           {cartItems.map((product) => (
+           
             <ProductContainer key={product.id}>
               <ProductImageContainer>
                 <Image src={product.imageUrl} width={94} height={94} alt=''/>
               </ProductImageContainer>
               <ProductDescriptionContainer>
                   <h1>{product.name}  </h1>
-                  <span>{formatCurrency(parseFloat(product.price))}</span>
+                  <span>{formatCurrency(parseInt(product.price))}</span>
                   <button onClick={() => removeFromCart(product.id)}>Remover</button>
               </ProductDescriptionContainer>
             </ProductContainer>

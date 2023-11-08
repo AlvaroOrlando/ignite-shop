@@ -1,6 +1,5 @@
 import { stripe } from '@/lib/stripe'
 import { ImageContainer, ProductContainer, ProductDetails } from '@/styles/pages/product'
-import axios from 'axios'
 import { GetStaticPaths, GetStaticProps } from 'next'
 import Head from 'next/head'
 import Image from 'next/image'
@@ -9,6 +8,8 @@ import { useState } from 'react'
 import Stripe from 'stripe'
 
 import { useShoppingCart } from "../../hooks/useShoppingCart"
+
+import { formatCurrency } from '../../utilities/utilities'
 
 interface ProductProps {
     product:{
@@ -76,7 +77,7 @@ export default function Product({ product }:ProductProps){
 
             <ProductDetails>
                 <h1>{product.name}</h1>
-                <span>{product.price}</span>
+                <span>{formatCurrency(parseFloat(product.price))}</span>
                 <p>
                     {product.description}
                 </p>
@@ -110,13 +111,6 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     const price = product.default_price as Stripe.Price
 
     const revalidationTime = 60 * 60 * 1 //1 hour
-
-    const IntlConfig = {
-        style: 'currency',
-        currency: 'BRL'
-      }
-
-    const formatedPrice = new Intl.NumberFormat('pt-BR', IntlConfig).format(price.unit_amount ? price.unit_amount / 100 : 0)
 
     const ProductListing = {
         id: product.id,
