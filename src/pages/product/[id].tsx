@@ -27,28 +27,28 @@ export default function Product({ product }:ProductProps){
 
     const [isCreatingCheckoutSession, setIsCreatingCheckoutSession ] = useState(false)
 
-    async function handleBuyProduct(){
-        try {
+    // async function handleBuyProduct(){
+    //     try {
 
-            setIsCreatingCheckoutSession(true)
+    //         setIsCreatingCheckoutSession(true)
 
-            const response = await axios.post('/api/checkout', {
-                priceId:product.defaultPriceId
-            })
+    //         const response = await axios.post('/api/checkout', {
+    //             priceId:product.defaultPriceId
+    //         })
 
-            const { checkoutUrl } = response.data;
+    //         const { checkoutUrl } = response.data;
 
-            //rota externa (para usar rota interna, usar router.push())
-            window.location.href = checkoutUrl
+    //         //rota externa (para usar rota interna, usar router.push())
+    //         window.location.href = checkoutUrl
 
-        } catch(err) {
+    //     } catch(err) {
 
-            setIsCreatingCheckoutSession(false)
+    //         setIsCreatingCheckoutSession(false)
 
-            //Conectar com alguma ferramenta de observabilidade (Datadog / Sentry)
-            alert('Falha ao redirecionar ao checkout')
-        } 
-    }
+    //         //Conectar com alguma ferramenta de observabilidade (Datadog / Sentry)
+    //         alert('Falha ao redirecionar ao checkout')
+    //     } 
+    // }
 
     const { isFallback } = useRouter()
 
@@ -122,7 +122,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
         id: product.id,
         name: product.name,
         imageUrl: product.images[0],
-        price: formatedPrice,
+        price: price.unit_amount,
         description: product.description,
         defaultPriceId: price.id
     }

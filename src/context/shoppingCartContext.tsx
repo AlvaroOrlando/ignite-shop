@@ -56,7 +56,6 @@ export function ShoppinCartProvider({ children }:ShoppinCartProviderProps){
            return sum
         }
 
-
         function increaseCartQuantity(product: Product) {
             setCartItems((currItems) => {
               const existingItem = currItems.find((item) => item.id === product.id);
@@ -74,7 +73,6 @@ export function ShoppinCartProvider({ children }:ShoppinCartProviderProps){
               }
             });
         }
-          
 
         function decreaseCartQuantity(id:string){
             setCartItems(currItems => {
@@ -102,7 +100,6 @@ export function ShoppinCartProvider({ children }:ShoppinCartProviderProps){
             setCartItems([])
         }
         
-
 
     return <ShoppingCartContext.Provider 
       value={{
