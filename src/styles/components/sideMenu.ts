@@ -98,6 +98,15 @@ export const CustomOffcanvasFooter = styled('div', {
         '&:hover': {
             backgroundColor:'$green300'
         },
+
+        '&:disabled': {
+            opacity:0.6,
+            cursor:'not-allowed'
+        },
+
+        '&:not(disabled):hover': {
+            backgroundColor:'$green300'
+        },
     }, 
 
     section: {

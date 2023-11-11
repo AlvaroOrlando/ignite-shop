@@ -1,6 +1,6 @@
 
 import Image from 'next/image';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Offcanvas from 'react-bootstrap/Offcanvas';
 import bagImg from '../assets/bag.svg';
 
@@ -19,6 +19,7 @@ import {
   ProductImageContainer, 
   Products 
 } from '../styles/components/sideMenu'; 
+import axios from 'axios';
 
 interface CartItem {
   id:string
@@ -31,25 +32,16 @@ interface CartItem {
 export default function SideMenu() {
 
   const { getAllItemsQuantity, cartItems, removeFromCart } = useShoppingCart()
+  const [isCreatingCheckoutSession, setIsCreatingCheckoutSession ] = useState(false)
 
-  const calculateTotalPrice = (cartItems:CartItem[]) => {
-  let totalPrice = 0;
-
-  for (const item of cartItems) {
-
-    const itemPrice = parseFloat(item.price)
-
-    if ( item.quantity > 0) {
-      totalPrice += itemPrice * item.quantity;
-    }
-  }
-
-  const formatedPrice = formatCurrency(totalPrice)
-
-
-  return `${formatedPrice}`;
-}
-
+  const calculateTotalPrice = (cartItems: CartItem[]) => {
+    const totalPrice = cartItems.reduce((total, item) => {
+      const itemPrice = parseFloat(item.price);
+      return total + itemPrice * item.quantity;
+    }, 0);
+  
+    return formatCurrency(totalPrice);
+  };
 
   const [show, setShow] = useState(false);
 
@@ -66,6 +58,39 @@ export default function SideMenu() {
     maxWidth:'480px',
     padding:'2rem',
   }
+
+
+  async function handleCheckout() {
+    try {
+
+      setIsCreatingCheckoutSession(true)
+
+      const response = await axios.post('/api/checkout', {
+        cartItems: cartItems.map(item => ({
+          id: item.id,
+          price: item.price,
+          quantity: item.quantity,
+          name:item.name,
+          description:item.description,
+          imageUrl:item.imageUrl
+        })),
+      });
+
+      console.log(isCreatingCheckoutSession);
+  
+      // handleClose();
+      const { checkoutUrl } = response.data;
+
+    window.location.href = checkoutUrl
+
+    } catch (error) {
+      setIsCreatingCheckoutSession(false)
+      console.error('Erro ao processar o checkout:', error);
+    }
+  }
+  useEffect(() => {
+    console.log('isCreatingCheckoutSession atualizado:', isCreatingCheckoutSession);
+  }, [isCreatingCheckoutSession]);
 
   return (
 
@@ -84,7 +109,7 @@ export default function SideMenu() {
           {cartItems.map((product) => (
             [...Array(product.quantity)].map((_, index) => (
            
-            <ProductContainer key={product.id}>
+            <ProductContainer key={`${product.id}_${index}`}>
               <ProductImageContainer>
                 <Image src={product.imageUrl} width={94} height={94} alt=''/>
               </ProductImageContainer>
@@ -111,7 +136,7 @@ export default function SideMenu() {
               <div>{calculateTotalPrice(cartItems)}</div>
             </div>
           </section>
-          <button>Finalizar compra</button>
+          <button onClick={() => handleCheckout()} disabled={isCreatingCheckoutSession}>Finalizar compra</button>
         </CustomOffcanvasFooter>
 
       </Offcanvas>
