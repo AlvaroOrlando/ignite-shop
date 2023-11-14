@@ -59,6 +59,7 @@ export default function SideMenu() {
     padding:'2rem',
   }
 
+  const isCartEmpty = cartItems.length === 0 
 
   async function handleCheckout() {
     try {
@@ -76,9 +77,6 @@ export default function SideMenu() {
         })),
       });
 
-      console.log(isCreatingCheckoutSession);
-  
-      // handleClose();
       const { checkoutUrl } = response.data;
 
     window.location.href = checkoutUrl
@@ -88,9 +86,6 @@ export default function SideMenu() {
       console.error('Erro ao processar o checkout:', error);
     }
   }
-  useEffect(() => {
-    console.log('isCreatingCheckoutSession atualizado:', isCreatingCheckoutSession);
-  }, [isCreatingCheckoutSession]);
 
   return (
 
@@ -136,7 +131,11 @@ export default function SideMenu() {
               <div>{calculateTotalPrice(cartItems)}</div>
             </div>
           </section>
-          <button onClick={() => handleCheckout()} disabled={isCreatingCheckoutSession}>Finalizar compra</button>
+          <button 
+            onClick={() => handleCheckout()} 
+            disabled={isCreatingCheckoutSession || isCartEmpty}>
+            {isCartEmpty ? 'Sacola vazia' : 'Finalizar compra'}
+          </button>
         </CustomOffcanvasFooter>
 
       </Offcanvas>

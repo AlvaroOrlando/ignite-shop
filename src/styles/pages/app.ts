@@ -16,13 +16,16 @@ export const Header = styled('header',{
 
     display:'flex',
     alignItems:'center',
-    justifyContent:'space-between'
+    justifyContent:'space-between',
+
 })
+
+
 
 export const BagContainer = styled('div', {
 
     position: 'relative',
-
+    
     button: {
         border:'none',
         outline:'none',

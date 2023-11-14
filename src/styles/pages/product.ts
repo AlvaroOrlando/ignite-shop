@@ -24,8 +24,16 @@ export const ImageContainer = styled('div', {
     justifyContent:'center',
 
     img: {
-        objectFit:'cover'
-    }
+        objectFit:'cover',
+        transition: 'transform 0.5s',
+        cursor:'zoom-in',
+
+        '&:hover':{
+            transform: 'scale(1.2)',
+        }
+    },
+
+   
 })
 
 export const ProductDetails = styled('div', {

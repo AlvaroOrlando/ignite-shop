@@ -8,72 +8,93 @@ import Link from "next/link";
 import Stripe from "stripe";
 
 interface SuccessProps {
-    customerName:string;
-    product: {
+    customerName: string;
+    products: {
         name: string;
         imgUrl: string;
-    };
+        quantity: number;
+        id:string;
+    }[];
 }
 
-export default function Success({ customerName, product }:SuccessProps){
+
+export default function Success({ customerName, products }: SuccessProps) {
+
+    const totalQuantity = products.reduce((total, product) => total + product.quantity, 0);
+
     return (
         <>
-          <Head>
-            <title>Compra efetuada | Ignite Shop</title>
-            <meta name="robots" content="noindex"/>
-          </Head>
-          <SuccessContainer>
-            <h1>Compra efetuada!</h1>
+            <Head>
+                <title>Compra efetuada | Ignite Shop</title>
+                <meta name="robots" content="noindex" />
+            </Head>
+            <SuccessContainer>
+                <h1>Compra efetuada!</h1>
+                <section>
+                    {products.map((product, index) => (
+                        <SuccessImageContainer key={`${product.id}_${index}`}>
+                            <Image src={product.imgUrl} width={120} height={110} alt={product.name} />
+                        </SuccessImageContainer>
+                    ))}
+                </section>
+                <p>
+                    Uhull, <strong>{customerName}</strong>, sua compra de <strong>{totalQuantity} camisetas</strong> já está a caminho da sua casa!
+                </p>
 
-            <SuccessImageContainer>
-            <Image src={product.imgUrl} width={120} height={110} alt=""/>
-            </SuccessImageContainer>
-
-            <p>
-                Uhull, <strong>{customerName}</strong>, sua camiseta <strong>{product.name}</strong> já está a caminho da sua casa!
-            </p>
-
-            <Link href="/">
-                Voltar ao catálogo
-            </Link>
-          </SuccessContainer>
-       </>
-    )
+                <Link href="/">Voltar ao catálogo</Link>
+            </SuccessContainer>
+        </>
+    );
 }
 
-export const getServerSideProps: GetServerSideProps = async ({ query }) => {
-    
-    const sessionId = String(query.session_id)
 
-    if(!query.session_id){
+export const getServerSideProps: GetServerSideProps = async ({ query }) => {
+    const sessionIds = Array.isArray(query.session_id) ? query.session_id : [query.session_id];
+
+    if (!query.session_id || sessionIds.length === 0) {
         return {
-            redirect:{
-                destination:'/',
-                permanent:false
+            redirect: {
+                destination: '/',
+                permanent: false
+            }
+        };
+    }
+
+    const products = [];
+    let customerName: string = '';
+
+    for (const sessionId of sessionIds) {
+        const session = await stripe.checkout.sessions.retrieve(String(sessionId), {
+            expand: ['line_items.data.price.product', 'customer']
+        });
+
+
+        const lineItems = session.line_items?.data;
+        customerName = session.customer_details?.name || customerName;
+
+        if (lineItems && lineItems.length > 0) {
+            
+            for (const lineItem of lineItems) {
+                const product = lineItem.price?.product as Stripe.Product;
+                const productName = product.name;
+                const quantity = lineItem.quantity;
+
+                const productImgUrl = product.images.length > 0 ? String(product.images[0]) : '';
+                
+
+                products.push({
+                    name: productName,
+                    imgUrl: productImgUrl,
+                    quantity
+                });
             }
         }
     }
 
-    const session = await stripe.checkout.sessions.retrieve(sessionId, {
-        expand: ['line_items.data.price.product']
-    })
-
-    const customerName = session.customer_details?.name
-
-    const product = session.line_items?.data[0].price?.product as Stripe.Product
-
-    const productImgUrl = String(product.images[0])
-    const productName = product.name
-
-
     return {
         props: {
-            customerName,
-
-            product: {
-               name: productName,
-               imgUrl: productImgUrl
-            }
+            customerName:customerName,
+            products
         }
-      };
-}
+    };
+};

@@ -8,22 +8,29 @@ import { BagContainer, MainContainer, Header } from '@/styles/pages/app'
 import Image from 'next/image'
 import SideMenu from '@/components/SideMenu'
 import { ShoppinCartProvider } from "@/context/shoppingCartContext";
+import { useRouter } from 'next/router';
+import Link from "next/link";
+
 
 globalStyles()
 
 export default function App({ Component, pageProps }: AppProps) {
 
-
+  const router = useRouter(); 
+  const isOnSuccessPage = router.pathname === '/success';
 
   return (
     <ShoppinCartProvider>
       <MainContainer>
         <Header>
-          <Image src={logoimg} alt="logo" />
-          <BagContainer>
-            
-            <SideMenu />
-          </BagContainer>
+          <Link href='/'>
+           <Image src={logoimg} alt="logo" style={{ width: isOnSuccessPage ? '100%' : 'auto' }} />
+          </Link>
+          {!isOnSuccessPage && (
+            <BagContainer>
+              <SideMenu />
+            </BagContainer>
+          )}
         </Header>
 
         <Component {...pageProps} />
